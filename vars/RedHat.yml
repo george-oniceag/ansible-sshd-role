@@ -1,0 +1,6 @@
+---
+sshd_pkgs:
+    - shadow-utils
+    - libselinux-python
+    - policycoreutils-python
+    - python-netifaces

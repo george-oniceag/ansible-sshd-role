@@ -1,0 +1,18 @@
+#!/usr/bin/env python
+
+import json
+import commands
+import re
+import netifaces
+
+
+
+for _interface in netifaces.interfaces():   
+        _result = { json.dumps(_interface): netifaces.ifaddresses(_interface)[netifaces.AF_INET] }
+	print(json.dumps(_result, sort_keys=True, indent=4))
+
+#	print json.dumps(netifaces.ifaddresses(_interface)[netifaces.AF_INET], indent=2, sort_keys=True)
+
+#for _interface in netifaces.interfaces():
+#   _value = _interface.
+

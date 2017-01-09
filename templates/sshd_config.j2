@@ -1,0 +1,104 @@
+#####################################################################
+# Ansible generate file ! Please do not edit !
+# Generated date : {{ansible_date_time.weekday}} {{ansible_date_time.date}} 
+# Generated for  : {{ansible_hostname}}
+# File name      : {{sshd_config_location | default('/etc/ssh/sshd_config')}}
+#####################################################################
+
+# This is the sshd server system-wide configuration file.  See
+# This sshd was compiled with PATH=/usr/local/bin:/usr/bin
+
+# The strategy used for options in the default sshd_config shipped with
+# OpenSSH is to specify options with their default value where
+# possible, but leave them commented.  Uncommented options override the
+# default value.
+
+# If you want to change the port on a SELinux system, you have to tell
+# SELinux about this change.
+# semanage port -a -t ssh_port_t -p tcp #PORTNUMBER
+
+{% for value in sshd.listen.ports %}
+Port {{value}}
+{% endfor %}
+
+#Address family definition
+AddressFamily {{sshd.listen.address.family}} 
+{% if sshd.listen.address.family == "inet" or sshd.listen.address.family == "any" %}
+#Ipv4 listen address
+{% for value in sshd.listen.address.ipv4 %}
+ListenAddress {{value}}
+{% endfor %}{% endif %}
+{% if sshd.listen.address.family == "inet6" or sshd.listen.address.family == "any" %}
+#Ipv6 listen address
+{% for value in sshd.listen.address.ipv6 %}
+ListenAddress {{value}}
+{% endfor %}{% endif %}
+
+#SSHD Protocol&key definition
+Protocol {{sshd.Protocol}}
+{% for name in sshd.key.HostKey %}
+HostKey {{name}}
+{% endfor %}
+
+# Lifetime and size of ephemeral version 1 server key
+{% for name,value in sshd.key.options.iteritems() %}
+{{name}} {{value}}
+{% endfor %}
+
+# Logging
+{% for name,value in sshd.logging.iteritems() %}
+{{name}} {{value}}
+{% endfor %}
+
+# Authentication:
+{% for name,value in sshd.Authentication.iteritems() %}
+{{name}} {{value}}
+{% endfor %}
+
+# Authorizationi
+{% for name,value in sshd.Authorization.iteritems() %}
+{% if name == "AuthorizedKeysFile" %}
+AuthorizedKeysFile {{value|join(' ')}}
+{% else %}
+{{name}} {{value}}
+{% endif %}
+{% endfor %}
+
+# Authentication_options_extended 
+{% for key,sub_dict in sshd.Authentication_options_extended.iteritems() %}
+# {{key}} options
+{% for name,value in sub_dict.iteritems() %}
+{{key}}{{name}} {{value}}
+{% endfor %}{% endfor %}
+
+# Extended options
+{% for name,value in sshd.Extended_options.iteritems() %}
+{{name}} {{value}}
+{% endfor %}
+
+# Banner
+{% if sshd_banner == "yes" %}
+Banner {{sshd.Banner}}
+{% else %}
+#Banner none
+{% endif %}
+
+# Accept locale-related environment variables
+{% for value in sshd.Environment %}
+AcceptEnv {{value}}
+{% endfor %}
+
+# override default of no subsystems
+{% for name,value in sshd.Subsystem.iteritems() %}
+Subsystem {{name}} {{value}}
+{% endfor %}
+
+# Example of overriding settings on a per-user basis
+{% for ug_type,value_1 in sshd_UG_overide.iteritems() %}
+{% for counter_1,value_2 in value_1.iteritems() %}
+Match {{ug_type}} {{value_2.name_data|join(' ')}}
+{% for key,value_overides in value_2.overides.iteritems() %}
+  {{key}} {{value_overides}}
+{% endfor %}
+{% endfor %}{% endfor %}
+

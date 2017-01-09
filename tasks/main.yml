@@ -1,0 +1,14 @@
+---
+#Determine type of OS
+- name: Determine the OS specific variables
+  include_vars: "{{ansible_os_family}}.yml"
+
+#Configure ssh access user groups
+- name: Prepare groups
+  group: name={{item}} state=present
+  with_items: '{{sshd_group_list}}'
+  become: true
+
+- name: Setup system depending on OS
+  include: "setup-{{ansible_os_family}}.yml"
+  become: true

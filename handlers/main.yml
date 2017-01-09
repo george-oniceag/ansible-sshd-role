@@ -1,0 +1,11 @@
+---
+- block:
+    - name: restart sshd
+      systemd: name=sshd state=restarted 
+      become: yes
+  when: ansible_service_mgr == "systemd"
+- block:
+    - name: restart sshd
+      service: name=sshd state=restarted
+      become: yes
+  when: ansible_service_mgr == "service"
