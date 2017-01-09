@@ -76,6 +76,18 @@ AuthorizedKeysFile {{value|join(' ')}}
 {{name}} {{value}}
 {% endfor %}
 
+{% if sshd_group_deny is defined or sshd_users_deny is defined %}
+# Group\User Restrictions
+{% endif %}
+{% if sshd_group_deny is defined %}
+DenyGroups {{sshd_group_deny|join(' ')}}
+{% endif %}
+{% if sshd_users_deny is defined %}
+DenyUsers {{sshd_users_deny|join(' ')}}
+{% endif %}
+
+
+
 # Banner
 {% if sshd_banner == "yes" %}
 Banner {{sshd.Banner}}

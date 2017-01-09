@@ -1,25 +1,14 @@
 ---
 #List all the available ssh access groups
 sshd_group_list: ["sshadmins","sshusers","sshguests"]
+sshd_group_deny: ["root","users"]
+sshd_users_deny: ["root","nobody"]
 
 #Location of config file
 sshd_config_location: "/etc/ssh/sshd_config"
 
 #SSH banner
 sshd_banner: "yes" #sets weathere to use banner
-sshd_banner_msg: '
-********************************************************************
-*                                                                  *
-* This system is for the use of authorized users only.  Usage of   *
-* this system may be monitored and recorded by system personnel.   *
-*                                                                  *
-* Anyone using this system expressly consents to such monitoring   *
-* and is advised that if such monitoring reveals possible          *
-* evidence of criminal activity, system personnel may provide the  *
-* evidence from such monitoring to law enforcement officials.      *
-*                                                                  *
-********************************************************************
-'
 
 #SSHd in hosts.allow
 sshd_hosts_allow:
@@ -118,9 +107,9 @@ sshd:
   Subsystem:
         sftp: "/usr/libexec/openssh/sftp-server"
 
-###############################
-#     SSHD Groups Overide     #
-###############################
+#####################################
+#     SSHD Groups/Users Overide     #
+#####################################
 
 sshd_UG_overide:
         Group:

@@ -10,34 +10,4 @@
         setype: ssh_port_t
         state : present
 
-- name: Ensure sshd in hosts.allow
-  lineinfile:
-        dest: "/etc/hosts.allow"
-        line: 'sshd: {{item}}'
-        regexp: "^sshd"
-        state: present
-  with_items: "{{sshd_hosts_allow.condition}}"
-
-- name: Prepare banner file
-  vars:
-        var: "{{sshd_banner_msg}}"
-  template:
-        src : var_to_file.j2
-        dest: "{{sshd.Banner}}"
-        owner : root
-        group : root
-        mode  : 0600
-        backup: yes
-  when: sshd_banner == "yes"
-
-- name: Prepare config file
-  template:
-     src   : sshd_config.j2
-     dest  : "{{sshd_config_location | default('/etc/sshd/sshd_config')}}"
-     owner : root
-     group : root
-     mode  : 0600
-     backup: yes
-     validate : '/usr/sbin/sshd -T -f %s'
-  notify: restart sshd
 

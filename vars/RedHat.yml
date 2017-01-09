@@ -4,3 +4,5 @@ sshd_pkgs:
     - libselinux-python
     - policycoreutils-python
     - python-netifaces
+    - openssh-server
+    - openssh
