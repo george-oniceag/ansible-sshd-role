@@ -88,4 +88,9 @@ sshd:
         - "XMODIFIERS"
   Subsystem:
         sftp: "/usr/libexec/openssh/sftp-server"
+  Criptography:
+        Ciphers: "ssh_server_cbc_required"
+        MACs   : "ssh_server_weak_hmac"
+        KexAlgorithms: "ssh_server_weak_kex"
+
 
