@@ -1,0 +1,91 @@
+#####################################################################
+# Ansible generate file ! Please do not edit !
+# Generated date : {{ansible_date_time.weekday}} {{ansible_date_time.date}}
+# Generated for  : {{ansible_hostname}}
+# File name      : {{ssh_config_location | default('/etc/ssh/ssh_config')}}
+#####################################################################
+
+# This is the ssh client system-wide configuration file.  See
+# ssh_config(5) for more information.  This file provides defaults for
+# users, and the values can be changed in per-user configuration files
+# or on the command line.
+
+# Configuration data is parsed as follows:
+#  1. command line options
+#  2. user-specific file
+#  3. system-wide file
+# Any configuration value is only changed the first time it is set.
+# Thus, host-specific definitions should be at the beginning of the
+# configuration file, and defaults at the end.
+
+# Site-wide defaults for some commonly used options.  For a comprehensive
+# list of available options, their meanings and defaults, please see the
+# ssh_config(5) man page.
+
+# Address family should always be limited to the active network configuration.
+AddressFamily {{sshd.listen.address.family}}
+
+# Set the protocol version to 2 for security reasons. Disables legacy support.
+Protocol {{sshd.Protocol}}
+
+{% for host,data in ssh_client.hosts.iteritems() %}
+Host {{host}}
+{% for key,value in data.iteritems() %}
+{% if key == "IdentityFile" %}
+	{{key}} {{value|join(' ')}}
+{% elif key == "Ciphers" -%}
+  {% if value == "ssh_client_cbc_required" -%}
+    {% if (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '14.04') or (ansible_distribution == 'Debian' and ansible_distribution_version >= '8') or (ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version >= '7' ) %}
+	Ciphers {{ ssh_ciphers_66_weak | join(',') }}
+    {% else %}
+	Ciphers {{ ssh_ciphers_53_weak | join(',') }}
+    {% endif -%}
+{% else %}
+    {% if (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '14.04') or (ansible_distribution == 'Debian' and ansible_distribution_version >= '8') or (ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version >= '7') %}
+        Ciphers {{ ssh_ciphers_66_default | join(',') }}
+    {% else %}
+        Ciphers {{ ssh_ciphers_53_default | join(',') }}
+    {% endif -%}
+  {% endif -%}
+{% elif key == "MACs" -%}
+  {% if value == "ssh_client_weak_hmac" -%}
+    {% if (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '14.04') or (ansible_distribution == 'Debian' and ansible_distribution_version >= '8') or (ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version >= '7') %}
+        MACs {{ ssh_macs_66_weak | join(',') }}
+    {% elif ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version <= '6' %}
+        MACs {{ ssh_macs_53_default | join(',') }}
+    {% endif -%}
+  {% else %}
+    {% if (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '14.04') or (ansible_distribution == 'Debian' and ansible_distribution_version >= '8') or (ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version >= '7') %}
+        MACs {{ ssh_macs_66_default | join(',') }}
+    {% elif ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version <= '6' %}
+        MACs {{ ssh_macs_53_default | join(',') }}
+    {% else %}
+        MACs {{ ssh_macs_59_default | join(',') }}
+    {% endif -%}
+  {% endif -%}
+{% elif key == "KexAlgorithms" -%}
+  {% if (ansible_distribution == 'Ubuntu' and ansible_distribution_version >= '14.04') or (ansible_distribution == 'Debian' and ansible_distribution_version >= '8') or (ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version >= '7') -%}
+    {% if value == "ssh_client_weak_kex" %}
+        KexAlgorithms {{ ssh_kex_66_weak | join(',') }}
+    {% else %}
+        KexAlgorithms {{ ssh_kex_66_default | join(',') }}
+    {% endif -%}
+  {% else -%}
+    {% if ansible_os_family in ['Oracle Linux', 'RedHat'] and ansible_distribution_major_version <= '6' %}
+        #KexAlgorithms
+    {% elif value == "ssh_client_weak_kex" %}
+        KexAlgorithms {{ ssh_kex_59_weak | join(',') }}
+    {% else %}
+        KexAlgorithms {{ ssh_kex_59_default | join(',') }}
+    {% endif %}
+  {% endif -%}
+{% elif key == "environment" %}
+    # Send locale-related environment variables
+  {% for i in value %}
+      SendEnv {{i}}
+  {% endfor %}
+{% else %}
+	{{key}} {{value}}
+{% endif -%}
+{% endfor %}{% endfor %}
+

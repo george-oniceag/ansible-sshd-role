@@ -3,6 +3,15 @@
 - name: Determine the OS specific variables
   include_vars: "{{ansible_os_family}}.yml"
 
+- name: Include ssh_client.vars
+  include_vars: "{{item}}"
+  with_items:
+        - ssh_client_vars.yml
+        - ssh_ciphers.yml
+        - sshd_overides.yml
+        - sshd_server_vars.yml
+
+
 #Configure ssh access user groups
 - name: Prepare groups
   group: name={{item}} state=present
@@ -43,15 +52,24 @@
         backup: yes
     when: sshd_banner == "yes"
 
-  - name: Prepare config file
+  - name: Prepare SSHD config file
     template:
       src   : sshd_config.j2
-      dest  : "{{sshd_config_location | default('/etc/sshd/sshd_config')}}"
+      dest  : "{{sshd_config_location | default('/etc/ssh/sshd_config')}}"
       owner : root
       group : root
       mode  : 0600
       backup: yes
       validate : '/usr/sbin/sshd -T -f %s'
     notify: restart sshd
+
+  - name: Prepare SSH config file
+    template:
+      src : ssh_config.j2
+      dest: "{{ssh_config_location | default('/etc/ssh/ssh_config')}}"
+      owner : root
+      group : root
+      mode  : 0600
+      backup: yes
 
   become: true

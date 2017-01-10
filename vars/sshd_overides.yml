@@ -1,0 +1,28 @@
+#####################################
+#     SSHD Groups/Users Overide     #
+#####################################
+
+sshd_UG_overide:
+        Group:
+           1:
+                name_data: ["sshadmins"]
+                overides:
+                        X11Forwarding: "yes"
+                        AllowTcpForwarding: "yes"
+           2:
+                name_data: ["nobody"]
+                overides:
+                        X11Forwarding: "no"
+                        AllowTcpForwarding: "no"
+                        PermitTTY: "no"
+                        ForceCommand: "cvs server"
+        User:
+           1:
+                name_data: ["anoncvs"]
+                overides:
+                        X11Forwarding: "no"
+                        AllowTcpForwarding: "no"
+                        PermitTTY: "no"
+                        ForceCommand: "cvs server"
+
+

@@ -1,0 +1,91 @@
+#################################
+#     SSHD config Parameters    #
+#################################
+
+sshd:
+  listen:
+        ports: ["22","5022"]
+        address:
+                family: inet   # vars: any, inet, inet6
+                ipv4: ['0.0.0.0']
+                ipv6: ['::']
+  Protocol: 2
+  key:
+    HostKey:   #location of hostkeys
+        - "/etc/ssh/ssh_host_rsa_key"
+        - "/etc/ssh/ssh_host_ecdsa_key"
+        - "/etc/ssh/ssh_host_ed25519_key"
+    options:
+        KeyRegenerationInterval: "1h"
+        ServerKeyBits: 4096
+        RekeyLimit: "500M 10m"         #default value: default none
+  logging:
+        SyslogFacility: "AUTHPRIV"     #default: AUTH
+        LogLevel      : "INFO"
+  Authentication:
+        UsePAM         : "yes"
+        LoginGraceTime : "30s"         #default: 2
+        PermitRootLogin: "no"          #default: yes
+        StrictModes    : "yes"
+        MaxAuthTries   : "3"           #default: 5
+        MaxSessions    : "10"
+        PasswordAuthentication : "no"  #default: yes
+        PermitEmptyPasswords   : "no"
+        RSAAuthentication   : "yes"
+        PubkeyAuthentication: "yes"
+        RhostsRSAAuthentication : "no"
+        HostbasedAuthentication : "no"
+        ChallengeResponseAuthentication : "no"
+  Authorization:
+        AuthorizedKeysFile: [".ssh/authorized_keys"] # default: .ssh/authorized_keys, .ssh/authorized_keys2
+        AuthorizedPrincipalsFile : "none"
+        AuthorizedKeysCommand    : "none"
+        AuthorizedKeysCommandUser: "nobody"
+        IgnoreUserKnownHosts     : "no"
+        IgnoreRhosts             : "yes"
+  Authentication_options_extended:
+        Kerberos:
+                Authentication: "no"
+                OrLocalPasswd : "yes"
+                TicketCleanup : "yes"
+                #GetAFSToken   : "no"
+                UseKuserok    : "yes"
+        GSSAPI:
+                Authentication     : "yes"
+                CleanupCredentials : "no"
+                StrictAcceptorCheck: "yes"
+                KeyExchange        : "no"
+                Enablek5users      : "no"
+  Extended_options:
+        AllowAgentForwarding: "no"      #default: yes
+        AllowTcpForwarding  : "no"      #default: yes
+        GatewayPorts        : "no"
+        X11Forwarding       : "no"      #default: yes
+        X11UseLocalhost     : "no"      #default: yes
+        X11DisplayOffset    : 10
+        PermitTTY     : "yes"
+        PrintMotd     : "yes"
+        PrintLastLog  : "yes"
+        TCPKeepAlive  : "yes"
+        UseLogin      : "no"
+        UsePrivilegeSeparation : "sandbox"
+        PermitUserEnvironment  : "no"
+        Compression   : "delayed"
+        ClientAliveInterval    : 5      #default: 0
+        ClientAliveCountMax    : 5      #default: 3
+        ShowPatchLevel         : "no"
+        UseDNS        : "yes"
+        PidFile       : "/var/run/sshd.pid"
+        MaxStartups   : '10:30:60'
+        PermitTunnel  : "no"
+        ChrootDirectory : "none"
+        VersionAddendum : "none"
+  Banner : "/etc/ssh/sshd_banner"      #default: none
+  Environment:
+        - "LANG LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES"
+        - "LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT"
+        - "LC_IDENTIFICATION LC_ALL LANGUAGE"
+        - "XMODIFIERS"
+  Subsystem:
+        sftp: "/usr/libexec/openssh/sftp-server"
+

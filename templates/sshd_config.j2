@@ -105,7 +105,7 @@ AcceptEnv {{value}}
 Subsystem {{name}} {{value}}
 {% endfor %}
 
-# Example of overriding settings on a per-user basis
+# Overriding settings on a per-user/per-group basis
 {% for ug_type,value_1 in sshd_UG_overide.iteritems() %}
 {% for counter_1,value_2 in value_1.iteritems() %}
 Match {{ug_type}} {{value_2.name_data|join(' ')}}
